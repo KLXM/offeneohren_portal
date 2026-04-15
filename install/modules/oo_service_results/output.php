@@ -233,17 +233,17 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
 
         <?php if ($hours = trim((string) $service->getValue('office_hours'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: clock; ratio:0.8" class="uk-margin-small-right"></span><strong>Sprechzeiten</strong></dt>
-        <dd style="margin:0;"><?= $linkifyText($hours) ?></dd>
+        <dd style="margin:0;"><?php if (mb_strlen($hours) > 120): ?><?= $linkifyText(mb_substr($hours, 0, 120)) ?>… <?php if ('' !== $detailUrl): ?><a href="<?= rex_escape($detailUrl) ?>" class="uk-link">mehr</a><?php endif; ?><?php else: ?><?= $linkifyText($hours) ?><?php endif; ?></dd>
         <?php endif; ?>
 
         <?php if ($focus = trim((string) $service->getValue('focus'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: info; ratio:0.8" class="uk-margin-small-right"></span><strong>Schwerpunkte</strong></dt>
-        <dd style="margin:0;"><?= $linkifyText($focus) ?></dd>
+        <dd style="margin:0;"><?php if (mb_strlen($focus) > 120): ?><?= $linkifyText(mb_substr($focus, 0, 120)) ?>… <?php if ('' !== $detailUrl): ?><a href="<?= rex_escape($detailUrl) ?>" class="uk-link">mehr</a><?php endif; ?><?php else: ?><?= $linkifyText($focus) ?><?php endif; ?></dd>
         <?php endif; ?>
 
         <?php if ($qual = trim((string) $service->getValue('carer_qualification'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: star; ratio:0.8" class="uk-margin-small-right"></span><strong>Qualifikation</strong></dt>
-        <dd style="margin:0;"><?= $linkifyText($qual) ?></dd>
+        <dd style="margin:0;"><?php if (mb_strlen($qual) > 120): ?><?= $linkifyText(mb_substr($qual, 0, 120)) ?>… <?php if ('' !== $detailUrl): ?><a href="<?= rex_escape($detailUrl) ?>" class="uk-link">mehr</a><?php endif; ?><?php else: ?><?= $linkifyText($qual) ?><?php endif; ?></dd>
         <?php endif; ?>
 
         <?php if (!empty($langNames)): ?>
