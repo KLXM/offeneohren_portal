@@ -108,6 +108,23 @@ if (!empty($groupIds) && !empty($currentDistricts)) {
         $relatedServices[] = rex_offeneohren_portal_service::get((int)$row['id']);
     }
 }
+
+// URLs im Freitext erkennen, kürzen (max. 40 Zeichen Anzeige) und verlinken
+$linkifyText = static function(string $text): string {
+    return preg_replace_callback(
+        '#https?://\S+#i',
+        static function(array $m): string {
+            $href = htmlspecialchars($m[0], ENT_QUOTES, 'UTF-8');
+            $display = preg_replace('#^https?://(www\.)?#i', '', $m[0]);
+            if (mb_strlen($display) > 40) {
+                $display = mb_substr($display, 0, 40) . '\u2026';
+            }
+            $display = htmlspecialchars($display, ENT_QUOTES, 'UTF-8');
+            return '<a href="' . $href . '" target="_blank" rel="noopener">' . $display . '</a>';
+        },
+        nl2br(rex_escape($text))
+    );
+};
 ?>
 <section class="uk-section uk-section-small">
     <div class="uk-container uk-container-small">
@@ -163,21 +180,21 @@ if (!empty($groupIds) && !empty($currentDistricts)) {
                         <?php if ($hours = trim((string) $service->getValue('office_hours'))): ?>
                             <div class="uk-margin-small-bottom">
                                 <span uk-icon="clock" class="uk-margin-small-right"></span> <strong>Sprechzeiten:</strong><br>
-                                <?= nl2br(rex_escape($hours)) ?>
+                                <?= $linkifyText($hours) ?>
                             </div>
                         <?php endif; ?>
                         
                         <?php if ($focus = trim((string) $service->getValue('focus'))): ?>
                             <div class="uk-margin-small-bottom">
                                 <span uk-icon="info" class="uk-margin-small-right"></span> <strong>Schwerpunkte:</strong><br>
-                                <?= nl2br(rex_escape($focus)) ?>
+                                <?= $linkifyText($focus) ?>
                             </div>
                         <?php endif; ?>
                         
                         <?php if ($qual = trim((string) $service->getValue('carer_qualification'))): ?>
                             <div class="uk-margin-small-bottom">
                                 <span uk-icon="star" class="uk-margin-small-right"></span> <strong>Qualifikation:</strong><br>
-                                <?= nl2br(rex_escape($qual)) ?>
+                                <?= $linkifyText($qual) ?>
                             </div>
                         <?php endif; ?>
 
