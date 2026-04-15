@@ -209,7 +209,7 @@ $linkifyText = static function(string $text): string {
     );
 };
 
-$renderDetails = function($service, $districtNames, $langNames) use ($changeArticleId, $linkifyText) {
+$renderDetails = function($service, $districtNames, $langNames, string $detailUrl = '') use ($changeArticleId, $linkifyText) {
     ob_start();
     ?>
     <dl class="oo-details-grid uk-text-small">
@@ -254,7 +254,8 @@ $renderDetails = function($service, $districtNames, $langNames) use ($changeArti
 
     <?php $desc = trim((string) $service->getValue('description')); ?>
     <?php if ('' !== $desc): ?>
-        <p class="uk-margin-small-bottom uk-text-small"><?= nl2br(rex_escape(mb_strimwidth($desc, 0, 360, '...'))) ?></p>
+        <?php $descTruncated = mb_strlen($desc) > 360; ?>
+        <p class="uk-margin-small-bottom uk-text-small"><?= nl2br(rex_escape(mb_strimwidth($desc, 0, 360, ''))) ?><?php if ($descTruncated): ?>…<?php if ('' !== $detailUrl): ?> <a href="<?= rex_escape($detailUrl) ?>" class="uk-link">Weiterlesen</a><?php endif; ?><?php endif; ?></p>
     <?php endif ?>
 
     <?php 
@@ -362,7 +363,8 @@ $renderDetails = function($service, $districtNames, $langNames) use ($changeArti
                                 <h3 class="uk-card-title uk-light uk-margin-remove-bottom"><?= rex_escape((string) $service->getValue('name')) ?></h3>
                             </header>
                             <div class="uk-card-body">
-                                <?= $renderDetails($service, $districtNames, $langNames) ?>
+                                <?php $detailUrl = rex_getUrl(rex_article::getCurrentId(), null, ['service_id' => $service->getId()]); ?>
+                                <?= $renderDetails($service, $districtNames, $langNames, $detailUrl) ?>
                             </div>
                         </article>
                     </div>
@@ -394,7 +396,8 @@ $renderDetails = function($service, $districtNames, $langNames) use ($changeArti
                             <h3 class="uk-card-title uk-light uk-margin-remove-bottom" style="font-size: 1.1rem; line-height: 1.4;"><?= rex_escape((string) $service->getValue('name')) ?></h3>
                         </a>
                         <div class="uk-accordion-content uk-card-body uk-margin-remove-top">
-                            <?= $renderDetails($service, $districtNames, $langNames) ?>
+                            <?php $detailUrl = rex_getUrl(rex_article::getCurrentId(), null, ['service_id' => $service->getId()]); ?>
+                            <?= $renderDetails($service, $districtNames, $langNames, $detailUrl) ?>
                         </div>
                     </li>
                 <?php endforeach ?>
