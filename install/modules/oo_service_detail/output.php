@@ -155,7 +155,7 @@ $linkifyText = static function(string $text): string {
             </div>
 
             <div class="uk-card-body">
-                <div class="uk-text-lead oo-description">
+                <div class="oo-description">
                     <?= nl2br(rex_escape((string) $service->getValue('description'))) ?>
                 </div>
 
