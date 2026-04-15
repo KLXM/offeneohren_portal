@@ -212,7 +212,7 @@ $linkifyText = static function(string $text): string {
 $renderDetails = function($service, $districtNames, $langNames) use ($changeArticleId, $linkifyText) {
     ob_start();
     ?>
-    <dl class="uk-text-small" style="display:grid; grid-template-columns: max-content 1fr; gap: 0.25rem 0.75rem; align-items: start; margin: 0 0 0.5rem;">
+    <dl class="oo-details-grid uk-text-small">
         <?php if (!empty($districtNames)): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: location; ratio:0.8" class="uk-margin-small-right"></span><strong>Zuständigkeitsbereiche</strong></dt>
         <dd style="margin:0;"><?= rex_escape(implode(', ', $districtNames)) ?></dd>
@@ -292,6 +292,10 @@ $renderDetails = function($service, $districtNames, $langNames) use ($changeArti
     return ob_get_clean();
 };
 ?>
+<style>
+.oo-details-grid { display:grid; grid-template-columns: max-content 1fr; gap: 0.25rem 0.75rem; align-items: start; margin: 0 0 0.5rem; }
+@media (max-width: 639px) { .oo-details-grid { grid-template-columns: 1fr; gap: 0; } .oo-details-grid dt { margin-top: 0.4rem; } .oo-details-grid dd { padding-left: 1.5rem; } }
+</style>
 <section id="oo-service-results" class="oo-service-results uk-section uk-section-small uk-background-muted">
     <div class="uk-container uk-container-large">
         
