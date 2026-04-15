@@ -193,6 +193,12 @@ if ($isPdfExport) {
 // =========================================================================
 
 // URLs im Freitext erkennen, kürzen (max. 40 Zeichen Anzeige) und verlinken
+// Zeilenumbrüche für Inline-Darstellung (Karte) durch Komma+Leerzeichen ersetzen
+$flattenText = static function(string $text): string {
+    return trim(preg_replace('/[\r\n]+/', ', ', $text));
+};
+
+// URLs im Freitext mit nl2br für Detailseite
 $linkifyText = static function(string $text): string {
     return preg_replace_callback(
         '#https?://\S+#i',
@@ -209,7 +215,12 @@ $linkifyText = static function(string $text): string {
     );
 };
 
-$renderDetails = function($service, $districtNames, $langNames, string $detailUrl = '') use ($changeArticleId, $linkifyText) {
+$renderDetails = function($service, $districtNames, $langNames, string $detailUrl = '') use ($changeArticleId, $linkifyText, $flattenText) {
+    $serviceName = rex_escape((string) $service->getValue('name'));
+    $readMoreLink = static function(string $label, string $url, string $name): string {
+        if ('' === $url) return '';
+        return ' <a href="' . rex_escape($url) . '" class="uk-link" aria-label="' . $label . ': ' . $name . '">' . $label . '</a>';
+    };
     ob_start();
     ?>
     <dl class="oo-details-grid uk-text-small">
@@ -233,17 +244,17 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
 
         <?php if ($hours = trim((string) $service->getValue('office_hours'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: clock; ratio:0.8" class="uk-margin-small-right"></span><strong>Sprechzeiten</strong></dt>
-        <dd style="margin:0;"><?php if (mb_strlen($hours) > 120): ?><?= $linkifyText(mb_substr($hours, 0, 120)) ?>… <?php if ('' !== $detailUrl): ?><a href="<?= rex_escape($detailUrl) ?>" class="uk-link">mehr</a><?php endif; ?><?php else: ?><?= $linkifyText($hours) ?><?php endif; ?></dd>
+        <dd style="margin:0;"><?= rex_escape($flattenText($hours)) ?></dd>
         <?php endif; ?>
 
         <?php if ($focus = trim((string) $service->getValue('focus'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: info; ratio:0.8" class="uk-margin-small-right"></span><strong>Schwerpunkte</strong></dt>
-        <dd style="margin:0;"><?php if (mb_strlen($focus) > 120): ?><?= $linkifyText(mb_substr($focus, 0, 120)) ?>… <?php if ('' !== $detailUrl): ?><a href="<?= rex_escape($detailUrl) ?>" class="uk-link">mehr</a><?php endif; ?><?php else: ?><?= $linkifyText($focus) ?><?php endif; ?></dd>
+        <dd style="margin:0;"><?= rex_escape($flattenText($focus)) ?></dd>
         <?php endif; ?>
 
         <?php if ($qual = trim((string) $service->getValue('carer_qualification'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: star; ratio:0.8" class="uk-margin-small-right"></span><strong>Qualifikation</strong></dt>
-        <dd style="margin:0;"><?php if (mb_strlen($qual) > 120): ?><?= $linkifyText(mb_substr($qual, 0, 120)) ?>… <?php if ('' !== $detailUrl): ?><a href="<?= rex_escape($detailUrl) ?>" class="uk-link">mehr</a><?php endif; ?><?php else: ?><?= $linkifyText($qual) ?><?php endif; ?></dd>
+        <dd style="margin:0;"><?= rex_escape($flattenText($qual)) ?></dd>
         <?php endif; ?>
 
         <?php if (!empty($langNames)): ?>
@@ -255,7 +266,7 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
     <?php $desc = trim((string) $service->getValue('description')); ?>
     <?php if ('' !== $desc): ?>
         <?php $descTruncated = mb_strlen($desc) > 360; ?>
-        <p class="uk-margin-small-bottom uk-text-small"><?= nl2br(rex_escape(mb_strimwidth($desc, 0, 360, ''))) ?><?php if ($descTruncated): ?>…<?php if ('' !== $detailUrl): ?> <a href="<?= rex_escape($detailUrl) ?>" class="uk-link">Weiterlesen</a><?php endif; ?><?php endif; ?></p>
+        <p class="uk-margin-small-bottom uk-text-small"><?= nl2br(rex_escape(mb_strimwidth($desc, 0, 360, ''))) ?><?php if ($descTruncated): ?>…<?= $readMoreLink('Weiterlesen', $detailUrl, $serviceName) ?><?php endif; ?></p>
     <?php endif ?>
 
     <?php 
