@@ -129,7 +129,6 @@ $linkifyText = static function(string $text): string {
 <section class="uk-section uk-section-small">
     <div class="uk-container uk-container-small">
         
-        <?php 
         <?php
         $azArticleId = rex_request('az_id', 'int', 0);
         // Filterparameter wiederherstellen, falls über Suchergebnisse aufgerufen
