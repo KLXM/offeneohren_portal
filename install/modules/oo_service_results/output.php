@@ -228,18 +228,9 @@ $linkifyText = static function(string $text): string {
     return $escaped;
 };
 
-// Backend-Edit-URL für eingeloggte User (CSRF-Token einmalig pro Seitenaufruf)
-$backendEditToken = '';
-if (rex_backend_login::hasSession() && class_exists('rex_yform_manager_table')) {
-    rex::setProperty('redaxo', true);
-    $ooTable = rex_yform_manager_table::get('rex_yf_service');
-    if ($ooTable) {
-        $backendEditToken = rex_csrf_token::factory($ooTable->getCSRFKey())->getUrlParams()['_csrf_token'] ?? '';
-    }
-    rex::setProperty('redaxo', false);
-}
+$isBackendUser = rex_backend_login::hasSession() && class_exists('rex_yform_manager');
 
-$renderDetails = function($service, $districtNames, $langNames, string $detailUrl = '') use ($changeArticleId, $linkifyText, $flattenText, $backendEditToken) {
+$renderDetails = function($service, $districtNames, $langNames, string $detailUrl = '') use ($changeArticleId, $linkifyText, $flattenText, $isBackendUser) {
     $serviceName = rex_escape((string) $service->getValue('name'));
     $readMoreLink = static function(string $label, string $url, string $name): string {
         if ('' === $url) return '';
@@ -323,15 +314,10 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
             <a href="<?= $changeUrl ?>" class="uk-link-muted uk-text-small" uk-tooltip="Änderung vorschlagen" aria-label="Änderung vorschlagen"><span uk-icon="icon: pencil" class="uk-margin-small-right"></span>Ändern / Problem</a>
         </div>
         <?php endif; ?>
-        <?php if ('' !== $backendEditToken): ?>
+        <?php if ($isBackendUser): ?>
             <?php
             rex::setProperty('redaxo', true);
-            $beEditUrl = rex_url::backendPage('yform/manager/data_edit', [
-                'table_name'  => 'rex_yf_service',
-                'func'        => 'edit',
-                'data_id'     => $service->getId(),
-                '_csrf_token' => $backendEditToken,
-            ]);
+            $beEditUrl = rex_yform_manager::url('rex_yf_service', $service->getId());
             rex::setProperty('redaxo', false);
             ?>
             <a href="<?= $beEditUrl ?>" class="uk-icon-link uk-text-primary" uk-icon="icon: pencil" target="_blank" uk-tooltip="title: Datensatz bearbeiten" aria-label="Datensatz bearbeiten"></a>

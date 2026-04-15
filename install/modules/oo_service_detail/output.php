@@ -245,25 +245,14 @@ $linkifyText = static function(string $text): string {
                         <a href="<?= $changeUrl ?>" class="uk-link-muted" uk-tooltip="Änderung vorschlagen" aria-label="Änderung vorschlagen"><span uk-icon="icon: pencil" class="uk-margin-small-right"></span>Ändern / Problem melden</a>
                     </div>
                     <?php endif; ?>
-                    <?php if (rex_backend_login::hasSession() && class_exists('rex_yform_manager_table')): ?>
+                    <?php if (rex_backend_login::hasSession() && class_exists('rex_yform_manager')): ?>
                     <div class="uk-margin-small-left">
                         <?php
                         rex::setProperty('redaxo', true);
-                        $ooDetailTable = rex_yform_manager_table::get('rex_yf_service');
-                        if ($ooDetailTable) {
-                            $_beToken = rex_csrf_token::factory($ooDetailTable->getCSRFKey())->getUrlParams()['_csrf_token'] ?? '';
-                            $beEditUrl = rex_url::backendPage('yform/manager/data_edit', [
-                                'table_name'  => 'rex_yf_service',
-                                'func'        => 'edit',
-                                'data_id'     => $service->getId(),
-                                '_csrf_token' => $_beToken,
-                            ]);
-                        }
+                        $beEditUrl = rex_yform_manager::url('rex_yf_service', $service->getId());
                         rex::setProperty('redaxo', false);
                         ?>
-                        <?php if (!empty($beEditUrl)): ?>
                         <a href="<?= $beEditUrl ?>" class="uk-icon-link uk-text-primary" uk-icon="icon: pencil" target="_blank" uk-tooltip="title: Datensatz bearbeiten" aria-label="Datensatz bearbeiten"></a>
-                        <?php endif; ?>
                     </div>
                     <?php endif; ?>
                 </div>
