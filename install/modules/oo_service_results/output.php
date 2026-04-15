@@ -374,7 +374,7 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
                                 <h3 class="uk-card-title uk-light uk-margin-remove-bottom"><?= rex_escape((string) $service->getValue('name')) ?></h3>
                             </header>
                             <div class="uk-card-body">
-                                <?php $detailUrl = rex_getUrl(rex_article::getCurrentId(), null, ['service_id' => $service->getId()]); ?>
+                                <?php $detailUrl = rex_getUrl(rex_article::getCurrentId(), null, array_filter(['service_id' => $service->getId(), 'back_district' => $filters['district_id'], 'back_group' => $filters['group_id'], 'back_lang' => $filters['language_id'], 'back_q' => $filters['q']], function($v){ return $v !== 0 && $v !== ''; })); ?>
                                 <?= $renderDetails($service, $districtNames, $langNames, $detailUrl) ?>
                             </div>
                         </article>
@@ -407,7 +407,7 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
                             <h3 class="uk-card-title uk-light uk-margin-remove-bottom" style="font-size: 1.1rem; line-height: 1.4;"><?= rex_escape((string) $service->getValue('name')) ?></h3>
                         </a>
                         <div class="uk-accordion-content uk-card-body uk-margin-remove-top">
-                            <?php $detailUrl = rex_getUrl(rex_article::getCurrentId(), null, ['service_id' => $service->getId()]); ?>
+                            <?php $detailUrl = rex_getUrl(rex_article::getCurrentId(), null, array_filter(['service_id' => $service->getId(), 'back_district' => $filters['district_id'], 'back_group' => $filters['group_id'], 'back_lang' => $filters['language_id'], 'back_q' => $filters['q']], function($v){ return $v !== 0 && $v !== ''; })); ?>
                             <?= $renderDetails($service, $districtNames, $langNames, $detailUrl) ?>
                         </div>
                     </li>

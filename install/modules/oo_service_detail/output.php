@@ -130,12 +130,20 @@ $linkifyText = static function(string $text): string {
     <div class="uk-container uk-container-small">
         
         <?php 
+        <?php
         $azArticleId = rex_request('az_id', 'int', 0);
-        if ($azArticleId > 0): 
+        // Filterparameter wiederherstellen, falls über Suchergebnisse aufgerufen
+        $backParams = array_filter([
+            'district_id' => rex_request('back_district', 'int', 0),
+            'group_id'    => rex_request('back_group',    'int', 0),
+            'language_id' => rex_request('back_lang',     'int', 0),
+            'q'           => rex_request('back_q',        'string', ''),
+        ], function($v){ return $v !== 0 && $v !== ''; });
         ?>
+        <?php if ($azArticleId > 0): ?>
             <a href="<?= rex_getUrl($azArticleId) ?>" class="uk-button uk-button-text uk-margin-bottom"><span uk-icon="arrow-left"></span> Zurück zur A-Z Liste</a>
         <?php elseif ($overviewArticleId > 0): ?>
-            <a href="<?= rex_getUrl($overviewArticleId) ?>" class="uk-button uk-button-text uk-margin-bottom"><span uk-icon="arrow-left"></span> Zurück zur Übersicht</a>
+            <a href="<?= rex_escape(rex_getUrl($overviewArticleId, null, $backParams)) ?>" class="uk-button uk-button-text uk-margin-bottom"><span uk-icon="arrow-left"></span> Zurück zur Übersicht</a>
         <?php endif; ?>
 
         <div class="uk-card uk-card-default uk-overflow-hidden">
