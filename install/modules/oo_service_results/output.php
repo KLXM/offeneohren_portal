@@ -228,7 +228,18 @@ $linkifyText = static function(string $text): string {
     return $escaped;
 };
 
-$renderDetails = function($service, $districtNames, $langNames, string $detailUrl = '') use ($changeArticleId, $linkifyText, $flattenText) {
+// Backend-Edit-URL für eingeloggte User (CSRF-Token einmalig pro Seitenaufruf)
+$backendEditToken = '';
+if (rex_backend_login::hasSession() && class_exists('rex_yform_manager_table')) {
+    rex::setProperty('redaxo', true);
+    $ooTable = rex_yform_manager_table::get('rex_yf_service');
+    if ($ooTable) {
+        $backendEditToken = rex_csrf_token::factory($ooTable->getCSRFKey())->getUrlParams()['_csrf_token'] ?? '';
+    }
+    rex::setProperty('redaxo', false);
+}
+
+$renderDetails = function($service, $districtNames, $langNames, string $detailUrl = '') use ($changeArticleId, $linkifyText, $flattenText, $backendEditToken) {
     $serviceName = rex_escape((string) $service->getValue('name'));
     $readMoreLink = static function(string $label, string $url, string $name): string {
         if ('' === $url) return '';
@@ -257,17 +268,17 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
 
         <?php if ($hours = trim((string) $service->getValue('office_hours'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: clock; ratio:0.8" class="uk-margin-small-right"></span><strong>Sprechzeiten</strong></dt>
-        <dd style="margin:0;"><?= rex_escape($flattenText($hours)) ?></dd>
+        <dd style="margin:0;"><?= $linkifyText($flattenText($hours)) ?></dd>
         <?php endif; ?>
 
         <?php if ($focus = trim((string) $service->getValue('focus'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: info; ratio:0.8" class="uk-margin-small-right"></span><strong>Schwerpunkte</strong></dt>
-        <dd style="margin:0;"><?= rex_escape($flattenText($focus)) ?></dd>
+        <dd style="margin:0;"><?= $linkifyText($flattenText($focus)) ?></dd>
         <?php endif; ?>
 
         <?php if ($qual = trim((string) $service->getValue('carer_qualification'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: star; ratio:0.8" class="uk-margin-small-right"></span><strong>Qualifikation</strong></dt>
-        <dd style="margin:0;"><?= rex_escape($flattenText($qual)) ?></dd>
+        <dd style="margin:0;"><?= $linkifyText($flattenText($qual)) ?></dd>
         <?php endif; ?>
 
         <?php if (!empty($langNames)): ?>
@@ -310,6 +321,21 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
             $changeUrl = $changeUrlBase . (strpos($changeUrlBase, '?') !== false ? '&' : '?') . 'service_id=' . $service->getId();
             ?>
             <a href="<?= $changeUrl ?>" class="uk-link-muted uk-text-small" uk-tooltip="Änderung vorschlagen" aria-label="Änderung vorschlagen"><span uk-icon="icon: pencil" class="uk-margin-small-right"></span>Ändern / Problem</a>
+        </div>
+        <?php endif; ?>
+        <?php if ('' !== $backendEditToken): ?>
+        <div class="uk-width-1-1 uk-margin-small-top">
+            <?php
+            rex::setProperty('redaxo', true);
+            $beEditUrl = rex_url::backendPage('yform/manager/data_edit', [
+                'table_name'  => 'rex_yf_service',
+                'func'        => 'edit',
+                'data_id'     => $service->getId(),
+                '_csrf_token' => $backendEditToken,
+            ]);
+            rex::setProperty('redaxo', false);
+            ?>
+            <a href="<?= rex_escape($beEditUrl) ?>" class="uk-button uk-button-default uk-button-small uk-width-1-1" target="_blank" aria-label="Datensatz im Backend bearbeiten"><span uk-icon="icon: cog; ratio:0.85" class="uk-margin-small-right"></span>Im Backend bearbeiten</a>
         </div>
         <?php endif; ?>
     </div>
