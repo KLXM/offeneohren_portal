@@ -1,0 +1,35 @@
+package: offeneohren_portal
+version: 0.1.0-dev
+author: offeneohren
+supportpage: ''
+requires:
+  redaxo: ^5.17
+  php:
+    version: '>=8.1'
+  packages:
+    structure: '*'
+    yform: '*'
+    yform_content_builder: '*'
+page:
+  title: Offene Ohren Portal
+  perm: offeneohren_portal[]
+  icon: rex-icon fa-compass
+  subpages:
+    moderation:
+      title: Moderation
+    check:
+      title: Link-Checker
+    notifications:
+      title: Benachrichtigungen
+    setup:
+      title: Setup
+      perm: admin
+    help: 
+      title: Hilfe
+      subPath: help.md
+      itemClass: 'pull-right'
+    readme: 
+      title: README
+      perm: admin
+      subPath: README.md
+      itemClass: 'pull-right'

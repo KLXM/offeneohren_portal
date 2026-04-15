@@ -1,0 +1,9 @@
+title = Offene Ohren Portal
+setup_title = Setup and Sync
+setup_intro = Installs or updates templates and modules by key.
+setup_warning = No ID-based synchronization. All updates are key-based.
+setup_yfcb_note = YFCB elements are provided by this addon and automatically registered in the content builder via extension points.
+setup_action_sync_all = Sync all
+setup_action_sync_templates = Sync templates
+setup_action_sync_modules = Sync modules
+setup_report = Report
