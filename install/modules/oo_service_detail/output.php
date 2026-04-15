@@ -111,19 +111,32 @@ if (!empty($groupIds) && !empty($currentDistricts)) {
 
 // URLs im Freitext erkennen, kürzen (max. 40 Zeichen Anzeige) und verlinken
 $linkifyText = static function(string $text): string {
-    return preg_replace_callback(
+    // Erst escapen & nl2br, dann URLs und E-Mails verlinken
+    $escaped = nl2br(rex_escape($text));
+    // URLs
+    $escaped = preg_replace_callback(
         '#https?://\S+#i',
         static function(array $m): string {
             $href = htmlspecialchars($m[0], ENT_QUOTES, 'UTF-8');
             $display = preg_replace('#^https?://(www\.)?#i', '', $m[0]);
             if (mb_strlen($display) > 40) {
-                $display = mb_substr($display, 0, 40) . '\u2026';
+                $display = mb_substr($display, 0, 40) . '…';
             }
             $display = htmlspecialchars($display, ENT_QUOTES, 'UTF-8');
             return '<a href="' . $href . '" target="_blank" rel="noopener">' . $display . '</a>';
         },
-        nl2br(rex_escape($text))
+        $escaped
     );
+    // E-Mail-Adressen (nach URL-Pass, damit mailto-Links nicht doppelt verarbeitet werden)
+    $escaped = preg_replace_callback(
+        '#(?<!href="mailto:)[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}#',
+        static function(array $m): string {
+            $addr = htmlspecialchars($m[0], ENT_QUOTES, 'UTF-8');
+            return '<a href="mailto:' . $addr . '">' . $addr . '</a>';
+        },
+        $escaped
+    );
+    return $escaped;
 };
 ?>
 <section class="uk-section uk-section-small">
