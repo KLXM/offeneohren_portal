@@ -219,7 +219,7 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
     $serviceName = rex_escape((string) $service->getValue('name'));
     $readMoreLink = static function(string $label, string $url, string $name): string {
         if ('' === $url) return '';
-        return ' <a href="' . rex_escape($url) . '" class="uk-link" aria-label="' . $label . ': ' . $name . '">' . $label . '</a>';
+        return ' <a href="' . rex_escape($url) . '" class="uk-link" aria-label="' . $label . ': ' . $name . '">' . $label . ' <span uk-icon="icon: arrow-right; ratio: 0.8"></span></a>';
     };
     ob_start();
     ?>
