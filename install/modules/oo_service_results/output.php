@@ -191,7 +191,25 @@ if ($isPdfExport) {
 // =========================================================================
 // REGULAR FRONTEND EXPORT 
 // =========================================================================
-$renderDetails = function($service, $districtNames, $langNames) use ($changeArticleId) {
+
+// URLs im Freitext erkennen, kürzen (max. 40 Zeichen Anzeige) und verlinken
+$linkifyText = static function(string $text): string {
+    return preg_replace_callback(
+        '#https?://\S+#i',
+        static function(array $m): string {
+            $href = htmlspecialchars($m[0], ENT_QUOTES, 'UTF-8');
+            $display = preg_replace('#^https?://(www\.)?#i', '', $m[0]);
+            if (mb_strlen($display) > 40) {
+                $display = mb_substr($display, 0, 40) . '…';
+            }
+            $display = htmlspecialchars($display, ENT_QUOTES, 'UTF-8');
+            return '<a href="' . $href . '" target="_blank" rel="noopener">' . $display . '</a>';
+        },
+        nl2br(rex_escape($text))
+    );
+};
+
+$renderDetails = function($service, $districtNames, $langNames) use ($changeArticleId, $linkifyText) {
     ob_start();
     ?>
     <dl class="uk-text-small" style="display:grid; grid-template-columns: max-content 1fr; gap: 0.25rem 0.75rem; align-items: start; margin: 0 0 0.5rem;">
@@ -215,17 +233,17 @@ $renderDetails = function($service, $districtNames, $langNames) use ($changeArti
 
         <?php if ($hours = trim((string) $service->getValue('office_hours'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: clock; ratio:0.8" class="uk-margin-small-right"></span><strong>Sprechzeiten</strong></dt>
-        <dd style="margin:0;"><?= nl2br(rex_escape($hours)) ?></dd>
+        <dd style="margin:0;"><?= $linkifyText($hours) ?></dd>
         <?php endif; ?>
 
         <?php if ($focus = trim((string) $service->getValue('focus'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: info; ratio:0.8" class="uk-margin-small-right"></span><strong>Schwerpunkte</strong></dt>
-        <dd style="margin:0;"><?= nl2br(rex_escape($focus)) ?></dd>
+        <dd style="margin:0;"><?= $linkifyText($focus) ?></dd>
         <?php endif; ?>
 
         <?php if ($qual = trim((string) $service->getValue('carer_qualification'))): ?>
         <dt style="white-space:nowrap;"><span uk-icon="icon: star; ratio:0.8" class="uk-margin-small-right"></span><strong>Qualifikation</strong></dt>
-        <dd style="margin:0;"><?= nl2br(rex_escape($qual)) ?></dd>
+        <dd style="margin:0;"><?= $linkifyText($qual) ?></dd>
         <?php endif; ?>
 
         <?php if (!empty($langNames)): ?>
