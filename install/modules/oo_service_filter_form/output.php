@@ -81,6 +81,23 @@ $isFiltered = ($filters['q'] !== '' || $filters['district_id'] > 0 || $filters['
     const selectFields = form.querySelectorAll('select');
     let timer = null;
 
+    const STORAGE_KEY = 'oo_filter_state';
+
+    const saveFilterState = function () {
+        const params = new URLSearchParams(new FormData(form));
+        const state = {};
+        for (const [key, value] of params.entries()) {
+            if (value !== '' && value !== '0') {
+                state[key] = value;
+            }
+        }
+        if (Object.keys(state).length > 0) {
+            sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        } else {
+            sessionStorage.removeItem(STORAGE_KEY);
+        }
+    };
+
     const runLiveSearch = function () {
         const url = new URL(window.location.href);
         const params = new URLSearchParams(new FormData(form));
@@ -139,6 +156,7 @@ $isFiltered = ($filters['q'] !== '' || $filters['district_id'] > 0 || $filters['
                 }
                 
                 window.history.replaceState({}, '', url.toString());
+                saveFilterState();
             })
             .catch(function () {
                 window.location.href = url.toString();
@@ -162,5 +180,38 @@ $isFiltered = ($filters['q'] !== '' || $filters['district_id'] > 0 || $filters['
     selectFields.forEach(function (field) {
         field.addEventListener('change', runLiveSearch);
     });
+
+    // Beim Zurücksetzen auch sessionStorage leeren
+    const resetBtn = document.getElementById('oo-filter-reset');
+    if (resetBtn) {
+        resetBtn.addEventListener('click', function () {
+            sessionStorage.removeItem(STORAGE_KEY);
+        });
+    }
+
+    // Beim Laden: falls keine URL-Parameter gesetzt, sessionStorage wiederherstellen
+    const urlParams = new URLSearchParams(window.location.search);
+    const hasUrlFilter = urlParams.has('district_id') || urlParams.has('group_id') || urlParams.has('language_id') || urlParams.has('q');
+    if (!hasUrlFilter) {
+        const stored = sessionStorage.getItem(STORAGE_KEY);
+        if (stored) {
+            try {
+                const state = JSON.parse(stored);
+                if (inputQ && state.q) {
+                    inputQ.value = state.q;
+                }
+                ['district_id', 'group_id', 'language_id'].forEach(function (key) {
+                    const map = { district_id: 'oo-district', group_id: 'oo-group', language_id: 'oo-language' };
+                    const el = document.getElementById(map[key]);
+                    if (el && state[key]) {
+                        el.value = state[key];
+                    }
+                });
+                runLiveSearch();
+            } catch (e) {
+                sessionStorage.removeItem(STORAGE_KEY);
+            }
+        }
+    }
 })();
 </script>
