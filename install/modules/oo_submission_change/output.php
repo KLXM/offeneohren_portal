@@ -117,7 +117,8 @@ function rex_oo_field(string $id, string $label, string $html) {
                 $chosenDistricts = array_filter(array_map('intval', explode(',', (string)$getValue('district_id'))));
                 foreach ($districts as $id => $label) {
                     $sel = in_array((int)$id, $chosenDistricts, true) ? ' selected' : '';
-                    $districtSelect .= '<option value="'.(int)$id.'"'.$sel.'>'.rex_escape($label).'</option>';
+                    $dis = ($id === -1) ? ' disabled' : '';
+                    $districtSelect .= '<option value="'.(int)$id.'"'.$sel.$dis.'>'.rex_escape($label).'</option>';
                 }
                 $districtSelect .= '</select>';
                 

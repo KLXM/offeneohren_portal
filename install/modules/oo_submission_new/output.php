@@ -65,7 +65,7 @@ $languages = rex_offeneohren_portal_service_finder::languageOptions();
                 <label class="uk-form-label" for="oo-district">Zuständigkeitsbereiche</label>
                 <select class="uk-select oo-multi-select" id="oo-district" name="district_ids[]" multiple>
                     <?php foreach ($districts as $id => $label): ?>
-                        <option value="<?= (int) $id ?>"><?= rex_escape($label) ?></option>
+                        <option value="<?= (int) $id ?>"<?= $id === -1 ? ' disabled' : '' ?>><?= rex_escape($label) ?></option>
                     <?php endforeach ?>
                 </select>
             </div>
