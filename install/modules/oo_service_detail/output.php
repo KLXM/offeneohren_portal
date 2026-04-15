@@ -262,7 +262,7 @@ $linkifyText = static function(string $text): string {
                         rex::setProperty('redaxo', false);
                         ?>
                         <?php if (!empty($beEditUrl)): ?>
-                        <a href="<?= rex_escape($beEditUrl) ?>" class="uk-button uk-button-default uk-button-small" target="_blank" aria-label="Datensatz im Backend bearbeiten"><span uk-icon="icon: cog" class="uk-margin-small-right"></span>Im Backend bearbeiten</a>
+                        <a href="<?= $beEditUrl ?>" class="uk-icon-link uk-text-primary" uk-icon="icon: pencil" target="_blank" uk-tooltip="title: Datensatz bearbeiten" aria-label="Datensatz bearbeiten"></a>
                         <?php endif; ?>
                     </div>
                     <?php endif; ?>

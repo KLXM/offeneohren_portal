@@ -324,7 +324,6 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
         </div>
         <?php endif; ?>
         <?php if ('' !== $backendEditToken): ?>
-        <div class="uk-width-1-1 uk-margin-small-top">
             <?php
             rex::setProperty('redaxo', true);
             $beEditUrl = rex_url::backendPage('yform/manager/data_edit', [
@@ -335,8 +334,7 @@ $renderDetails = function($service, $districtNames, $langNames, string $detailUr
             ]);
             rex::setProperty('redaxo', false);
             ?>
-            <a href="<?= rex_escape($beEditUrl) ?>" class="uk-button uk-button-default uk-button-small uk-width-1-1" target="_blank" aria-label="Datensatz im Backend bearbeiten"><span uk-icon="icon: cog; ratio:0.85" class="uk-margin-small-right"></span>Im Backend bearbeiten</a>
-        </div>
+            <a href="<?= $beEditUrl ?>" class="uk-icon-link uk-text-primary" uk-icon="icon: pencil" target="_blank" uk-tooltip="title: Datensatz bearbeiten" aria-label="Datensatz bearbeiten"></a>
         <?php endif; ?>
     </div>
     <?php
