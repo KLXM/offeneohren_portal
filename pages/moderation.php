@@ -184,7 +184,9 @@ if (!$rows) {
     foreach ($rows as $row) {
         $sid = (int)$row['id'];
         $payload = json_decode((string) $row['payload_json'], true) ?: [];
-        $serviceLabel = $row['sid'] ? ('#' . (int) $row['sid'] . ' ' . (string) ($row['service_name'] ?? '')) : '-';
+        $serviceLabel = $row['sid'] 
+            ? ('#' . (int) $row['sid'] . ' ' . (string) ($row['service_name'] ?? ''))
+            : (!empty($payload['name']) ? '✦ ' . (string) $payload['name'] : '-');
         $typeLbl = $typeLabels[$row['type']] ?? rex_escape((string) $row['type']);
         $statusLbl = $statusLabels[$row['status']] ?? rex_escape((string) $row['status']);
 
