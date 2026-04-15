@@ -153,9 +153,9 @@ $linkifyText = static function(string $text): string {
         ], function($v){ return $v !== 0 && $v !== ''; });
         ?>
         <?php if ($azArticleId > 0): ?>
-            <a href="<?= rex_getUrl($azArticleId) ?>" class="uk-button uk-button-text uk-margin-bottom"><span uk-icon="arrow-left"></span> Zurück zur A-Z Liste</a>
+            <a href="<?= rex_getUrl($azArticleId) ?>#oo-service-results" class="uk-button uk-button-text uk-margin-bottom"><span uk-icon="arrow-left"></span> Zurück zur A-Z Liste</a>
         <?php elseif ($overviewArticleId > 0): ?>
-            <a href="<?= rex_escape(rex_getUrl($overviewArticleId, null, $backParams)) ?>" class="uk-button uk-button-text uk-margin-bottom"><span uk-icon="arrow-left"></span> Zurück zur Übersicht</a>
+            <a href="<?= rex_escape(rex_getUrl($overviewArticleId, null, $backParams)) ?>#oo-service-results" class="uk-button uk-button-text uk-margin-bottom"><span uk-icon="arrow-left"></span> Zurück zur Übersicht</a>
         <?php endif; ?>
 
         <div class="uk-card uk-card-default uk-overflow-hidden">
