@@ -196,32 +196,32 @@ $renderDetails = function($service, $districtNames, $langNames) use ($changeArti
     ?>
     <ul class="uk-list uk-list-collapse uk-text-small oo-details-list">
         <?php if (!empty($districtNames)): ?>
-        <li><strong>Zuständigkeitsbereiche:</strong> <?= rex_escape(implode(', ', $districtNames)) ?></li>
+        <li><span uk-icon="icon: location; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">Zuständigkeitsbereiche:</span> <?= rex_escape(implode(', ', $districtNames)) ?></li>
         <?php endif; ?>
-        <li><strong>Ort:</strong> <?= rex_escape((string) $service->getValue('city')) ?></li>
-        
+        <li><span uk-icon="icon: home; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">Ort:</span> <?= rex_escape((string) $service->getValue('city')) ?></li>
+
         <?php $phone = trim((string) $service->getValue('phone')); if ($phone): ?>
-        <li><strong>Telefon:</strong> <?= rex_escape($phone) ?></li>
+        <li><span uk-icon="icon: receiver; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">Telefon:</span> <?= rex_escape($phone) ?></li>
         <?php endif; ?>
-        
+
         <?php if ($email = trim((string) $service->getValue('email'))): ?>
-        <li><strong>E-Mail:</strong> <a href="mailto:<?= rex_escape($email) ?>"><?= rex_escape($email) ?></a></li>
+        <li><span uk-icon="icon: mail; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">E-Mail:</span> <a href="mailto:<?= rex_escape($email) ?>"><?= rex_escape($email) ?></a></li>
         <?php endif; ?>
-        
+
         <?php if ($hours = trim((string) $service->getValue('office_hours'))): ?>
-        <li><strong>Sprechzeiten:</strong><br><?= nl2br(rex_escape($hours)) ?></li>
+        <li><span uk-icon="icon: clock; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">Sprechzeiten:</span><br><?= nl2br(rex_escape($hours)) ?></li>
         <?php endif; ?>
-        
+
         <?php if ($focus = trim((string) $service->getValue('focus'))): ?>
-        <li><strong>Schwerpunkte:</strong><br><?= nl2br(rex_escape($focus)) ?></li>
+        <li><span uk-icon="icon: info; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">Schwerpunkte:</span><br><?= nl2br(rex_escape($focus)) ?></li>
         <?php endif; ?>
 
         <?php if ($qual = trim((string) $service->getValue('carer_qualification'))): ?>
-        <li><strong>Qualifikation:</strong><br><?= nl2br(rex_escape($qual)) ?></li>
+        <li><span uk-icon="icon: star; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">Qualifikation:</span><br><?= nl2br(rex_escape($qual)) ?></li>
         <?php endif; ?>
 
         <?php if (!empty($langNames)): ?>
-        <li><strong>Sprachen:</strong> <?= rex_escape(implode(', ', $langNames)) ?></li>
+        <li><span uk-icon="icon: comment; ratio: 0.75" class="uk-margin-small-right uk-text-muted"></span><span class="uk-text-muted" style="font-size:0.75rem;">Sprachen:</span> <?= rex_escape(implode(', ', $langNames)) ?></li>
         <?php endif; ?>
     </ul>
 
